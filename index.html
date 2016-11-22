@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>fullPage插件</title>
+<style>
+  *{padding:0;margin:0;}
+   html{height:100%;}
+   body{overflow:hidden;width:100%;height:100%;}
+   .container{height:100%;position:relative;}
+   .section{height:100%;}
+   .section1{background:#0F0;}
+   .section2{background:#0FF;}
+   .section3{background:#FF0;}
+   .section4{background:#F00;}
+   .section5{background:#00F;}
+</style>
+</head>
+<body>
+   <div class="container" id="box" style="top:0px">
+        <div class="section section1">
+   
+        </div>
+        <div class="section section2">
+   
+        </div>
+        <div class="section section3">
+   
+        </div>
+        <div class="section section4">
+   
+        </div>
+        <div class="section section5">
+   
+        </div>
+   </div>
+<script>
+//获取屏幕的高度 设置整个盒子高度为屏幕的高度
+   var height=document.body.clientHeight;
+   var box=document.getElementById("box");
+   box.style.height=height+"px";
+   var list=document.getElementsByClassName("section"); 
+   for(var i=0;i<list.length;i++){
+	  list[i].style.height=height+"px"; 
+   }
+   function pageEvent(){
+	  //根据不同浏览器来添加滚轮事件
+	   if(navigator.userAgent.indexOf("Firefox")!=-1){ //为火狐浏览器
+		   document.addEventListener('DOMMouseScroll',scroll,false)
+	   }else if(document.addEventListener){//为谷歌浏览器时
+		   document.addEventListener('mousewheel',scroll,false)
+	   }else if(document.attachEvent){//为IE浏览器时
+		    document.attachEvent('mousewheel',scroll,false)
+	   }else{
+		     document.onmousewheel=scroll;
+	   }
+   }
+   var newHeight=0;
+   var stime=0;
+   var etime=0;
+   function scroll(event){
+	   //谷歌 IE Opera||火狐
+	   var detail=event.wheelDelta||(-event.detail);
+	   stime=new Date().getTime();
+	   if(stime>etime+1000){//当不处于滚动状态时才执行
+		   if(detail>0&&parseInt(box.style.top)<0){
+				//向上滑
+				newHeight+=height;
+				//alert(newHeight);
+				animate(newHeight,false);
+		   }
+		   if(detail<0&&parseInt(box.style.top)>-height*(list.length-1)){
+				//向下滑
+				newHeight-=height;
+				//alert(newHeight);
+				//alert(parseInt(box.style.top));
+				animate(newHeight,true);
+		   }
+		 etime=new Date().getTime();
+	   }else{//当处于滚动状态时组织滚动的默认事件
+		   event.preventDefault();
+	   }
+	   
+	} 
+	function animate(h,isDown){
+		var speed=10;
+		var timer=setInterval(function(){
+			var top=parseInt(box.style.top);
+			if(isDown){//向下滑 递减
+				if(top>h){//滑动状态
+				   box.style.top=top-speed+"px";
+				}else{
+					clearInterval(timer);
+				}
+			}else{//向上滑
+				if(top<h){//滑动状态
+				   box.style.top=top+speed+"px";
+				}else{
+					clearInterval(timer);
+				}
+			}
+		},10)
+	}
+	pageEvent();
+</script>
+</body>
+</html>
